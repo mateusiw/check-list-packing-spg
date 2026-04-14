@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SPG Packing - Check-list</title>
+    
+    <!-- Ícones Modernos -->
+    <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/512/checked-checkbox.png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        /* Ocultar barra de rolagem mas permitir rolagem */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Animações */
+        .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Estilos de Impressão */
+        @media print {
+            @page { margin: 0.5cm; } /* Margem reduzida para aproveitar mais a folha */
+            body { 
+                background-color: white; 
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .page-break { page-break-after: always; }
+            .break-before-page { page-break-before: always; break-before: page; }
+        }
+        
+        .box-check {
+            transition: all 0.2s;
+        }
+        .box-check.checked-ok {
+            background-color: #22c55e;
+            border-color: #22c55e;
+            color: white;
+        }
+        .box-check.checked-nok {
+            background-color: #ef4444;
+            border-color: #ef4444;
+            color: white;
+        }
+        .box-check.checked-na {
+            background-color: #94a3b8;
+            border-color: #94a3b8;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen">
+
+    <!-- Navbar (Não aparece na impressão) -->
+    <div class="bg-white border-b border-slate-200 px-4 py-3 flex justify-between items-center shadow-sm sticky top-0 z-40 print:hidden">
+        <div class="flex items-center gap-3">
+            <img src="https://img.icons8.com/fluency/512/checked-checkbox.png" alt="Logo SPG" class="w-8 h-8 rounded-lg shadow-sm border border-slate-100">
+            <div>
+                <h1 class="text-sm font-bold text-slate-800 leading-tight">SPG Packing - Check-list</h1>
+                <p class="text-[10px] text-brand-600 font-bold uppercase tracking-wide">Gerador de Checklists</p>
+            </div>
+        </div>
+        <div class="flex gap-2">
+            <button type="button" onclick="window.print()" class="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold shadow-lg transition-all active:scale-95">
+                <i data-lucide="printer" class="w-4 h-4"></i>
+                <span class="hidden sm:inline">Imprimir Formulário</span>
+                <span class="sm:hidden">Imprimir</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="container mx-auto p-4 flex flex-col lg:flex-row gap-6 mt-4 print:p-0 print:m-0 print:block print:w-full print:max-w-full">
+        
+        <!-- COLUNA DA ESQUERDA: CONFIGURAÇÕES DO GERADOR -->
+        <div class="w-full lg:w-1/3 space-y-4 print:hidden">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="text-base font-black text-slate-800 flex items-center gap-2 mb-4 border-b border-slate-100 pb-3">
+                    <i data-lucide="settings-2" class="text-brand-500 w-5 h-5"></i> Configurar Relatório
+                </h2>
+                
+                <form id="configForm" class="space-y-4">
+                    
+                    <!-- 1. TIPO DE PROCESSO -->
+                    <div>
+                        <label class="text-xs font-bold text-slate-500 uppercase mb-1 block">Tipo de Checklist</label>
+                        <select id="processSelect" required onchange="updateGenerator()" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none text-sm bg-white font-bold text-brand-900">
+                            <option value="Armazenamento">📦 Armazenamento (Guardar na Câmara)</option>
+                            <option value="Embarque">🚚 Embarque (Carregar Caminhão)</option>
+                        </select>
+                    </div>
+
+                    <!-- 2. PRODUTOS E QUANTIDADES -->
+                    <div>
+                        <label class="text-xs font-bold text-slate-500 uppercase mb-2 block">Produto(s) no Pallet / Caminhão</label>
+                        <div class="grid grid-cols-2 gap-2" id="productCheckboxes">
+                            
+                            <!-- Tomate -->
+                            <label class="flex items-center gap-2 p-2 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50 bg-white transition-colors focus-within:border-brand-500">
+                                <input type="checkbox" id="chkTomate" value="Tomate" onchange="updateGenerator()" class="w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500" checked>
+                                <span class="text-sm font-bold text-slate-700 truncate">🍅 Tomate</span>
+                            </label>
+
+                            <!-- Brócolis -->
+                            <label class="flex items-center gap-2 p-2 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50 bg-white transition-colors focus-within:border-brand-500">
+                                <input type="checkbox" id="chkBrocolis" value="Brócolis" onchange="updateGenerator()" class="w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
+                                <span class="text-sm font-bold text-slate-700 truncate">🥦 Brócolis</span>
+                            </label>
+
+                            <!-- Couve-Flor -->
+                            <label class="flex items-center gap-2 p-2 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50 bg-white transition-colors focus-within:border-brand-500">
+                                <input type="checkbox" id="chkCouveFlor" value="Couve-Flor" onchange="updateGenerator()" class="w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
+                                <span class="text-sm font-bold text-slate-700 truncate">🥦 Couve-Flor</span>
+                            </label>
+
+                            <!-- Pepino -->
+                            <label class="flex items-center gap-2 p-2 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50 bg-white transition-colors focus-within:border-brand-500">
+                                <input type="checkbox" id="chkPepino" value="Pepino" onchange="updateGenerator()" class="w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
+                                <span class="text-sm font-bold text-slate-700 truncate">🥒 Pepino</span>
+                            </label>
+
+                        </div>
+                    </div>
+
+                    <!-- 3. IDENTIFICAÇÃO DO LOTE E DESTINO -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                        <div>
+                            <label id="palletLabelWeb" class="text-xs font-bold text-slate-500 uppercase mb-1 block">ID do Lote/Pallet</label>
+                            <input type="text" id="palletId" placeholder="Ex: Lote 124" oninput="updateGenerator()" class="w-full p-2 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-brand-500 outline-none font-bold">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-500 uppercase mb-1 block">Cliente / Destino</label>
+                            <input type="text" id="clientName" placeholder="Ex: Ceasa / Carrefour" oninput="updateGenerator()" class="w-full p-2 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-brand-500 outline-none font-bold">
+                        </div>
+                    </div>
+
+                    <!-- 4. RESPONSÁVEL E DATA -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-bold text-slate-500 uppercase mb-1 block">Conferente Responsável</label>
+                            <select id="driverSelect" required onchange="updateGenerator()" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none text-sm bg-white font-bold">
+                                <option value="">Selecione...</option>
+                                <option value="Fagner Elias">Fagner Elias</option>
+                                <option value="Outro">Outro (Em branco)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-500 uppercase mb-1 block">Data</label>
+                            <input type="date" id="reportDate" onchange="updateGenerator()" class="w-full p-2 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-brand-500 outline-none font-bold">
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 border border-blue-100 rounded-lg p-3 mt-4">
+                        <p class="text-xs text-blue-800 font-medium">
+                            <i data-lucide="info" class="w-3 h-3 inline mr-1"></i>
+                            A área de colagem de etiquetas na segunda página se ajusta automaticamente para Paripassu (Armazenamento) ou Notas Fiscais Múltiplas (Embarque).
+                        </p>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+        <!-- COLUNA DA DIREITA: PRÉ-VISUALIZAÇÃO A4 (IMPRESSÃO) -->
+        <div class="w-full lg:w-2/3 flex justify-center pb-10 print:w-full print:p-0 print:m-0 print:block">
+            
+            <!-- ÁREA DO DOCUMENTO A4 -->
+            <div id="printable-area" class="bg-white w-full max-w-[800px] shadow-2xl border border-slate-200 min-h-[1050px] p-8 lg:p-12 relative flex flex-col print:shadow-none print:border-none print:min-h-0 print:p-0 print:m-0 print:w-full print:max-w-none">
+                
+                <!-- CABEÇALHO DO DOCUMENTO -->
+                <div class="border-b-2 border-slate-800 pb-3 mb-4 flex justify-between items-end">
+                    <div>
+                        <h1 class="text-xl font-black text-slate-900 uppercase tracking-tight" id="docTitle">Checklist de Processo</h1>
+                        <p class="text-xs font-bold text-slate-500 mt-1" id="docSubtitle">Inspeção de Qualidade e Ponto de Controle SPG</p>
+                    </div>
+                    <div class="text-right">
+                        <img src="https://img.icons8.com/fluency/512/checked-checkbox.png" class="w-10 h-10 inline-block opacity-80" alt="Logo">
+                    </div>
+                </div>
+
+                <!-- DADOS GERAIS (Tabela) - Fontes reduzidas -->
+                <div class="w-full border border-slate-400 rounded flex flex-wrap mb-4">
+                    <div class="w-1/3 p-1.5 border-r border-b border-slate-400 bg-slate-50 print:bg-transparent">
+                        <span class="block text-[9px] uppercase font-bold text-slate-500">Processo da Etapa</span>
+                        <span class="block text-xs font-black text-slate-800" id="printProcess">---</span>
+                    </div>
+                    <div class="w-2/3 p-1.5 border-b border-slate-400 bg-slate-50 print:bg-transparent">
+                        <span class="block text-[9px] uppercase font-bold text-slate-500">Produto(s) e Quantidades (Preencher manual)</span>
+                        <span class="block text-[11px] font-black text-slate-800 leading-tight mt-0.5 break-words" id="printProduct">---</span>
+                    </div>
+                    <div id="printClientContainer" class="w-1/3 p-1.5 border-r border-b border-slate-400 bg-slate-50 print:bg-transparent transition-all">
+                        <span class="block text-[9px] uppercase font-bold text-slate-500">Cliente / Destino</span>
+                        <span class="block text-xs font-black text-slate-800 truncate" id="printClient">_______________________</span>
+                    </div>
+                    <div id="printLoteContainer" class="w-1/3 p-1.5 border-r border-b border-slate-400 transition-all">
+                        <span id="printLoteLabel" class="block text-[9px] uppercase font-bold text-slate-500">Lote / ID do Pallet</span>
+                        <span class="block text-[10px] font-black text-slate-800 truncate mt-0.5" id="printLote">_______________________</span>
+                    </div>
+                    <div class="w-1/3 p-1.5 border-b border-slate-400">
+                        <span class="block text-[9px] uppercase font-bold text-slate-500">Data</span>
+                        <span class="block text-xs font-black text-slate-800" id="printDate">__/__/____</span>
+                    </div>
+                    <div class="w-full p-1.5 bg-slate-50 print:bg-transparent border-slate-400">
+                        <span class="block text-[9px] uppercase font-bold text-slate-500">Conferente Responsável pela Validação</span>
+                        <span class="block text-xs font-black text-slate-800 truncate" id="printDriver">__________________</span>
+                    </div>
+                </div>
+
+                <!-- INSTRUÇÕES -->
+                <div class="mb-3 text-[10px] font-medium text-slate-600 bg-slate-50 print:bg-transparent p-1.5 border border-slate-200 rounded">
+                    <strong>Atenção:</strong> Caixas só podem ir para o pallet APÓS conferência de quantidade. O Pallet só pode ir para a câmara APÓS liberação do supervisor. Avalie e marque com (X).
+                </div>
+
+                <!-- CORPO DO CHECKLIST (GERADO VIA JS) - PÁGINA 1 -->
+                <div id="printChecklistBody" class="flex-grow flex flex-col gap-3 pb-4">
+                    <!-- Conteúdo injetado aqui -->
+                </div>
+
+                <!-- INÍCIO DA PÁGINA 2 NA IMPRESSÃO -->
+                <div class="print:break-before-page pt-4 print:pt-2 w-full" style="page-break-before: always; break-before: page;">
+                    
+                    <!-- ÁREA DE RASTREABILIDADE / NOTA FISCAL (ETIQUETAS) -->
+                    <div class="mt-1 mb-4 break-inside-avoid">
+                        <span id="labelsAreaTitleContainer" class="block text-[11px] font-bold text-slate-800 mb-2 uppercase flex items-center gap-1">
+                            <!-- Título Injetado via JS -->
+                        </span>
+                        <div id="printLabelsArea">
+                            <!-- Etiquetas injetadas via JS -->
+                        </div>
+                    </div>
+
+                    <!-- ÁREA DE ASSINATURAS E OBSERVAÇÕES -->
+                    <div class="mt-2 pt-2">
+                        <div class="mb-6">
+                            <span class="block text-[10px] font-bold text-slate-800 mb-1.5 uppercase">Observações / Motivo de Não Conformidade (Se houver):</span>
+                            <!-- Área de observação -->
+                            <div class="w-full border border-slate-400 h-16 rounded"></div>
+                        </div>
+                        
+                        <div class="grid grid-cols-3 gap-4 mt-8 px-2 text-center">
+                            <div>
+                                <div class="border-t border-slate-800 pt-1">
+                                    <span class="block text-[11px] font-bold text-slate-800">Assinatura do Conferente</span>
+                                    <span class="block text-[8px] text-slate-500 mt-0.5 leading-tight" id="signDriver">Validou as caixas da equipe</span>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="border-t border-slate-800 pt-1">
+                                    <span class="block text-[11px] font-bold text-slate-800">Assinatura do Montador</span>
+                                    <span class="block text-[8px] text-slate-500 mt-0.5 leading-tight">Empilhou e arqueou<br>o pallet</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="border-t border-slate-800 pt-1">
+                                    <span class="block text-[11px] font-bold text-slate-800">Assinatura do Supervisor</span>
+                                    <span class="block text-[8px] text-slate-500 mt-0.5 leading-tight">Validou qualidade e<br>liberou estocagem/embarque</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- FIM DA PÁGINA 2 -->
+                
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Função que retorna as perguntas baseado no Processo e Produto escolhido
+        function getDynamicQuestions(process, productsArray) {
+            
+            const productNames = productsArray.join(" + ");
+
+            if (process === "Armazenamento") {
+                
+                // 1. Bloco dinâmico dependendo dos produtos selecionados
+                let embalagemItems = [];
+                
+                if (productsArray.includes("Tomate")) {
+                    embalagemItems.push("TOMATE: Estão bem acondicionados dentro das cumbucas fechadas?");
+                    embalagemItems.push("TOMATE: A cinta com a logo e detalhes foi devidamente colocada em todas as cumbucas?");
+                }
+                
+                if (productsArray.includes("Brócolis") || productsArray.includes("Couve-Flor")) {
+                    const label = (productsArray.includes("Brócolis") && productsArray.includes("Couve-Flor")) ? "BRÓCOLIS / COUVE-FLOR" : (productsArray.includes("Brócolis") ? "BRÓCOLIS" : "COUVE-FLOR");
+                    embalagemItems.push(`${label}: Embalado corretamente pela máquina (filme bem esticado e selado)?`);
+                    embalagemItems.push(`${label}: Etiqueta manual aplicada corretamente em cada embalagem após sair da máquina?`);
+                }
+                
+                if (productsArray.includes("Pepino")) {
+                    embalagemItems.push("PEPINO: Completamente embalado/enrolado com insulfilm de forma adequada?");
+                    embalagemItems.push("PEPINO: Etiqueta de identificação aplicada corretamente sobre a embalagem?");
+                }
+
+                // Se houver mais de um produto, adiciona pergunta específica de Mix
+                if (productsArray.length > 1) {
+                    embalagemItems.push("PALLET MISTO: Organizado de forma lógica, com caixas mais pesadas/resistentes na base para não esmagar frágeis?");
+                }
+
+                if (embalagemItems.length === 0) {
+                    embalagemItems.push("Selecione ao menos um produto no menu lateral.");
+                }
+
+                return [
+                    { 
+                        category: `1. Padronização de Embalagem (${productNames})`, 
+                        items: embalagemItems 
+                    },
+                    { 
+                        category: "2. Liberação e Conferência da Caixa (Ponto Crítico)", 
+                        items: [
+                            "O CONFERENTE revisou as caixas montadas pela equipe, atestando a quantidade correta de pacotes antes de irem pro pallet?", 
+                            "As caixas avaliadas estão íntegras, limpas e sem avarias ou rasgos estruturais?"
+                        ] 
+                    },
+                    { 
+                        category: "3. Estrutura e Segurança do Pallet", 
+                        items: [
+                            "O pallet foi montado de forma perfeitamente alinhada e reta (sem caixas tortas ou tombando)?", 
+                            "As cantoneiras de proteção foram colocadas em todas as quinas do pallet?",
+                            "As cintas/fitas de arqueamento foram esticadas e travadas firmemente, sem esmagar as caixas do topo?",
+                            "A Etiqueta de Identificação/Lote do Pallet foi preenchida e fixada de forma visível?"
+                        ] 
+                    },
+                    { 
+                        category: "4. Liberação Final (Aprovação do Supervisor)", 
+                        items: [
+                            "O SUPERVISOR inspecionou o pallet finalizado e confirmou a qualidade geral do produto?",
+                            "O Supervisor autorizou formalmente a entrada e guarda deste pallet na Câmara Fria?"
+                        ] 
+                    }
+                ];
+            } 
+            
+            else if (process === "Embarque") {
+                // Checklist de embarque é mais voltado para o caminhão e logística geral
+                return [
+                    { 
+                        category: "1. Re-Inspeção dos Pallets (Saída da Câmara)", 
+                        items: [
+                            "Os Lotes/Pallets separados conferem EXATAMENTE com os solicitados no pedido (Romaneio)?", 
+                            "Os pallets se mantiveram íntegros na estocagem (continuam bem arqueados e sem avarias)?",
+                            `O(s) produto(s) (${productNames}) saiu da câmara fria na temperatura correta exigida para o embarque?`
+                        ] 
+                    },
+                    { 
+                        category: "2. Condições e Liberação do Veículo (Caminhão)", 
+                        items: [
+                            "O baú do caminhão foi previamente varrido, higienizado e não apresenta odores fortes?", 
+                            "O piso (assoalho) e as paredes laterais do baú estão sem buracos, pregos expostos ou sujeiras?",
+                            "O equipamento de refrigeração do caminhão já está ligado e atingiu a temperatura ideal para a viagem?"
+                        ] 
+                    },
+                    { 
+                        category: "3. Organização e Fim de Embarque", 
+                        items: [
+                            "Os pallets foram alocados corretamente dentro do baú, respeitando o espaço para circulação do ar frio?", 
+                            "A carga foi devidamente travada e amarrada com segurança para evitar que tombe durante a viagem?",
+                            "As Notas Fiscais e o Romaneio foram conferidos e a documentação foi entregue em mãos para o motorista?"
+                        ] 
+                    }
+                ];
+            }
+        }
+
+
+        // Inicialização
+        document.addEventListener("DOMContentLoaded", () => {
+            lucide.createIcons();
+            
+            const dateInput = document.getElementById('reportDate');
+            if (!dateInput.value) {
+                const today = new Date();
+                dateInput.value = today.toISOString().split('T')[0];
+            }
+            updateGenerator();
+        });
+
+        function updateGenerator() {
+            // Pegar valores do formulário
+            const process = document.getElementById('processSelect').value;
+            
+            // Listagem e manipulação dos produtos + suas quantidades manuais
+            const productsList = [
+                { id: 'Tomate', name: 'Tomate' },
+                { id: 'Brocolis', name: 'Brócolis' },
+                { id: 'CouveFlor', name: 'Couve-Flor' },
+                { id: 'Pepino', name: 'Pepino' }
+            ];
+
+            let selectedProductsNames = []; // Apenas os nomes para gerar as perguntas
+            let displayProductsText = []; // Textos formatados com quantidade ex: "Tomate (____ cx)"
+
+            productsList.forEach(prod => {
+                const checkbox = document.getElementById(`chk${prod.id}`);
+
+                if (checkbox.checked) {
+                    selectedProductsNames.push(prod.name);
+                    displayProductsText.push(`${prod.name} (____ cx)`);
+                }
+            });
+
+            if (selectedProductsNames.length === 0) {
+                selectedProductsNames = ["Nenhum"];
+                displayProductsText = ["Nenhum Produto Selecionado"];
+            }
+            
+            const printLoteContainer = document.getElementById('printLoteContainer');
+            const printClientContainer = document.getElementById('printClientContainer');
+
+            // Adaptação dos Labels de Lote/Pallet baseado no Processo
+            if (process === 'Embarque') {
+                document.getElementById('palletLabelWeb').innerText = "IDs dos Pallets (Vai pra Pág 2)";
+                document.getElementById('palletId').placeholder = "Ex: Lotes 124, 125, 126...";
+                
+                // Oculta Lote do cabeçalho da página 1 no Embarque
+                printLoteContainer.classList.add('hidden');
+                printClientContainer.classList.remove('w-1/3');
+                printClientContainer.classList.add('w-2/3');
+            } else {
+                document.getElementById('palletLabelWeb').innerText = "ID do Lote/Pallet";
+                document.getElementById('palletId').placeholder = "Ex: Lote 124";
+                document.getElementById('printLoteLabel').innerText = "Lote / ID do Pallet";
+
+                // Mostra Lote no cabeçalho da página 1 no Armazenamento
+                printLoteContainer.classList.remove('hidden');
+                printClientContainer.classList.remove('w-2/3');
+                printClientContainer.classList.add('w-1/3');
+            }
+
+            const lote = document.getElementById('palletId').value;
+            const client = document.getElementById('clientName').value;
+            const responsibleVal = document.getElementById('driverSelect').value;
+            const dateVal = document.getElementById('reportDate').value;
+
+            // Tratamento de nomes em branco ou manuais
+            const responsibleName = (responsibleVal === 'Outro' || !responsibleVal) ? '' : responsibleVal;
+
+            // Formatar data
+            let displayDate = "__/__/____";
+            if (dateVal) {
+                const parts = dateVal.split('-');
+                displayDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            }
+
+            // Atualizar cabeçalhos do documento
+            document.getElementById('docTitle').innerText = `CHECKLIST DE ${process}`;
+            document.getElementById('printProcess').innerText = process;
+            
+            // Aplicando o texto com o espaço em branco para quantidade manual
+            document.getElementById('printProduct').innerText = displayProductsText.join(" + ");
+            
+            document.getElementById('printClient').innerText = client ? client : "_______________________";
+            document.getElementById('printLote').innerText = lote ? lote : "_______________________";
+            document.getElementById('printDate').innerText = displayDate;
+            document.getElementById('printDriver').innerText = responsibleName ? responsibleName : "__________________";
+            document.getElementById('signDriver').innerHTML = responsibleName ? `<b>${responsibleName}</b><br>Validou as caixas` : "Validou as caixas da equipe";
+
+            // Gerar Corpo do Checklist
+            generateChecklistBody(process, selectedProductsNames);
+
+            // Gerar Área de Etiquetas Dinâmica (Paripassu vs Nota Fiscal)
+            generateLabelsArea(process, selectedProductsNames, lote);
+            
+            // Re-renderizar ícones injetados
+            lucide.createIcons();
+        }
+
+        function generateLabelsArea(process, productsArray, typedLotes) {
+            const container = document.getElementById('printLabelsArea');
+            const titleContainer = document.getElementById('labelsAreaTitleContainer');
+            container.innerHTML = '';
+
+            if (process === 'Armazenamento') {
+                // Layout Paripassu (Armazenamento)
+                titleContainer.innerHTML = '<i data-lucide="qr-code" class="w-4 h-4"></i> Rastreabilidade (Paripassu) - Colar Etiquetas do Pallet:';
+                container.className = 'grid grid-cols-4 print:grid-cols-4 gap-2';
+
+                let labelsToPrint = productsArray.includes("Nenhum") ? ["Produto"] : productsArray;
+
+                labelsToPrint.forEach(prod => {
+                    // Cria 4 áreas de colagem para CADA produto selecionado, tamanho compacto
+                    for (let i = 1; i <= 4; i++) {
+                        container.innerHTML += `
+                            <div class="border-2 border-dashed border-slate-400 rounded-lg h-20 flex flex-col items-center justify-center text-slate-400 bg-slate-50 print:bg-transparent relative overflow-hidden p-1">
+                                <div class="absolute inset-0 flex items-center justify-center opacity-10">
+                                    <i data-lucide="qr-code" class="w-8 h-8"></i>
+                                </div>
+                                <span class="text-[9px] font-bold uppercase tracking-wider text-slate-600 relative z-10 bg-slate-50 print:bg-white px-1 text-center leading-tight">Colar Etiqueta<br>${prod}</span>
+                                <span class="text-[7px] text-slate-400 relative z-10 mt-0.5 bg-slate-50 print:bg-white px-1 text-center">QR / Data / Parc.</span>
+                            </div>
+                        `;
+                    }
+                });
+            } else if (process === 'Embarque') {
+                // Layout Nota Fiscal (Embarque)
+                titleContainer.innerHTML = '<i data-lucide="file-text" class="w-4 h-4"></i> Faturamento e Liberação - Notas Fiscais e Pallets do Caminhão:';
+                container.className = 'grid grid-cols-3 print:grid-cols-3 gap-3';
+
+                // Gera 6 quadros para acomodar várias Notas Fiscais do mesmo embarque
+                for (let i = 1; i <= 6; i++) {
+                    container.innerHTML += `
+                        <div class="border-2 border-dashed border-slate-400 rounded-lg h-20 flex flex-col items-center justify-center text-slate-400 bg-slate-50 print:bg-transparent relative overflow-hidden p-2">
+                            <div class="absolute inset-0 flex items-center justify-center opacity-10">
+                                <i data-lucide="file-text" class="w-10 h-10"></i>
+                            </div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-600 relative z-10 bg-slate-50 print:bg-white px-2 text-center leading-tight">Colar Etiqueta<br>Nota Fiscal ${i}</span>
+                            <span class="text-[8px] text-slate-400 relative z-10 mt-1 bg-slate-50 print:bg-white px-1 text-center">Nº NF / Destino</span>
+                        </div>
+                    `;
+                }
+
+                // Adiciona um quadro extra embaixo para listar todos os IDs dos pallets fisicamente
+                container.innerHTML += `
+                    <div class="col-span-3 mt-1">
+                        <span class="block text-[10px] font-bold text-slate-800 mb-1.5 uppercase">Relação Completa de Pallets Embarcados (Escrever IDs/Lotes):</span>
+                        <div class="w-full border border-slate-400 h-12 rounded p-1.5 text-[11px] font-medium text-slate-700">
+                            ${typedLotes ? typedLotes : ''}
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function generateChecklistBody(process, productsArray) {
+            const container = document.getElementById('printChecklistBody');
+            container.innerHTML = '';
+
+            const categories = getDynamicQuestions(process, productsArray);
+            
+            categories.forEach((cat, catIndex) => {
+                let html = `
+                <div class="mb-1">
+                    <h3 class="text-[10px] font-black uppercase text-slate-800 bg-slate-100 print:bg-transparent py-1 px-2 border border-slate-300 border-b-0 rounded-t flex items-center gap-1.5">
+                        <span class="bg-slate-800 text-white w-3.5 h-3.5 rounded-full inline-flex items-center justify-center text-[8px] print:bg-black print:text-white">${catIndex + 1}</span> 
+                        ${cat.category}
+                    </h3>
+                    <div class="border border-slate-300 rounded-b overflow-hidden flex flex-col">
+                `;
+
+                cat.items.forEach((item, itemIndex) => {
+                    const uniqueId = `box_${catIndex}_${itemIndex}`;
+                    html += `
+                        <div class="flex border-b border-slate-200 last:border-b-0 break-inside-avoid">
+                            <!-- Pergunta -->
+                            <div class="flex-grow p-1.5 text-[11px] font-semibold text-slate-700 border-r border-slate-200 flex items-center leading-snug">
+                                ${item}
+                            </div>
+                            
+                            <!-- Quadrinhos Interativos (Visualização Web) -->
+                            <div class="flex shrink-0 items-center gap-3 px-3 bg-white print:hidden">
+                                
+                                <div class="flex items-center gap-1 cursor-pointer group" onclick="toggleBox('${uniqueId}', 'ok')">
+                                    <div id="${uniqueId}_ok" class="box-check w-3.5 h-3.5 border border-slate-400 rounded-sm flex items-center justify-center text-[9px] font-bold group-hover:border-green-500"></div>
+                                    <span class="text-[9px] font-bold text-slate-600 group-hover:text-green-600">OK</span>
+                                </div>
+
+                                <div class="flex items-center gap-1 cursor-pointer group" onclick="toggleBox('${uniqueId}', 'nok')">
+                                    <div id="${uniqueId}_nok" class="box-check w-3.5 h-3.5 border border-slate-400 rounded-sm flex items-center justify-center text-[9px] font-bold group-hover:border-red-500"></div>
+                                    <span class="text-[9px] font-bold text-slate-600 group-hover:text-red-600">NOK</span>
+                                </div>
+                                
+                                <div class="flex items-center gap-1 cursor-pointer group" onclick="toggleBox('${uniqueId}', 'na')">
+                                    <div id="${uniqueId}_na" class="box-check w-3.5 h-3.5 border border-slate-400 rounded-sm flex items-center justify-center text-[9px] font-bold group-hover:border-slate-500"></div>
+                                    <span class="text-[9px] font-bold text-slate-600 group-hover:text-slate-600">N/A</span>
+                                </div>
+                            </div>
+
+                            <!-- Versão Exclusiva para Impressão (Aparece apenas no papel) -->
+                            <div class="hidden print:flex shrink-0 items-center gap-3 px-3">
+                                <div class="flex items-center gap-1">
+                                    <div class="w-3.5 h-3.5 border border-black rounded-sm print-box-${uniqueId}-ok"></div>
+                                    <span class="text-[9px] font-bold text-black">OK</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <div class="w-3.5 h-3.5 border border-black rounded-sm print-box-${uniqueId}-nok"></div>
+                                    <span class="text-[9px] font-bold text-black">NOK</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <div class="w-3.5 h-3.5 border border-black rounded-sm print-box-${uniqueId}-na"></div>
+                                    <span class="text-[9px] font-bold text-black">N/A</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    `;
+                });
+
+                html += `
+                    </div>
+                </div>`;
+                
+                container.innerHTML += html;
+            });
+        }
+
+        // Função para tornar os formulários clicáveis na tela antes de imprimir
+        function toggleBox(uniqueId, type) {
+            // Reseta todos os botões visuais (Tela)
+            document.getElementById(`${uniqueId}_ok`).className = "box-check w-3.5 h-3.5 border border-slate-400 rounded-sm flex items-center justify-center text-[9px] font-bold group-hover:border-green-500";
+            document.getElementById(`${uniqueId}_ok`).innerHTML = "";
+            document.getElementById(`${uniqueId}_nok`).className = "box-check w-3.5 h-3.5 border border-slate-400 rounded-sm flex items-center justify-center text-[9px] font-bold group-hover:border-red-500";
+            document.getElementById(`${uniqueId}_nok`).innerHTML = "";
+            document.getElementById(`${uniqueId}_na`).className = "box-check w-3.5 h-3.5 border border-slate-400 rounded-sm flex items-center justify-center text-[9px] font-bold group-hover:border-slate-500";
+            document.getElementById(`${uniqueId}_na`).innerHTML = "";
+
+            // Reseta todos os botões de Impressão
+            const printBoxes = document.querySelectorAll(`[class*="print-box-${uniqueId}"]`);
+            printBoxes.forEach(box => {
+                box.innerHTML = "";
+                box.classList.remove("bg-slate-200");
+                box.style.color = "black";
+            });
+
+            // Aplica a classe ao selecionado (Tela)
+            const target = document.getElementById(`${uniqueId}_${type}`);
+            target.classList.remove('border-slate-400');
+            target.classList.add(`checked-${type}`);
+            
+            // Adiciona um ícone ou um "X" dentro do quadrado visual
+            if(type === 'ok') target.innerHTML = "✓";
+            if(type === 'nok') target.innerHTML = "✗";
+            if(type === 'na') target.innerHTML = "-";
+
+            // Aplica o "X" no quadrado de Impressão correspondente
+            const printTarget = document.querySelector(`.print-box-${uniqueId}-${type}`);
+            if(printTarget) {
+                printTarget.innerHTML = "<div class='flex items-center justify-center w-full h-full text-[12px] font-black font-sans leading-none pb-0.5'>X</div>";
+            }
+        }
+    </script>
+</body>
+</html>
