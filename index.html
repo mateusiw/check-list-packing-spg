@@ -6,7 +6,7 @@
     <title>SPG Packing - Check-list</title>
     
     <!-- Ícones Modernos -->
-    <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/512/checked-checkbox.png">
+    <link rel="icon" type="image/png" href="https://i.imgur.com/xSmARfS.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -78,7 +78,7 @@
     <!-- Navbar (Não aparece na impressão) -->
     <div class="bg-white border-b border-slate-200 px-4 py-3 flex justify-between items-center shadow-sm sticky top-0 z-40 print:hidden">
         <div class="flex items-center gap-3">
-            <img src="https://img.icons8.com/fluency/512/checked-checkbox.png" alt="Logo SPG" class="w-8 h-8 rounded-lg shadow-sm border border-slate-100">
+            <img src="https://i.imgur.com/xSmARfS.png" alt="Logo SPG" class="w-8 h-8 rounded-lg shadow-sm border border-slate-100 object-contain">
             <div>
                 <h1 class="text-sm font-bold text-slate-800 leading-tight">SPG Packing - Check-list</h1>
                 <p class="text-[10px] text-brand-600 font-bold uppercase tracking-wide">Gerador de Checklists</p>
@@ -146,27 +146,32 @@
                     </div>
 
                     <!-- 3. IDENTIFICAÇÃO DO LOTE E DESTINO -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                        <div>
-                            <label id="palletLabelWeb" class="text-xs font-bold text-slate-500 uppercase mb-1 block">ID do Lote/Pallet</label>
-                            <input type="text" id="palletId" placeholder="Ex: Lote 124" oninput="updateGenerator()" class="w-full p-2 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-brand-500 outline-none font-bold">
+                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 mt-4">
+                        <div class="sm:col-span-4">
+                            <label id="palletLabelWeb" class="text-xs font-bold text-slate-500 uppercase mb-1 block">Nº Embarque</label>
+                            <input type="text" id="palletId" placeholder="Ex: 124" oninput="updateGenerator()" class="w-full p-2 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-brand-500 outline-none font-bold">
                         </div>
-                        <div>
+                        <div class="sm:col-span-3">
+                            <label class="text-xs font-bold text-slate-500 uppercase mb-1 block">Nº Sensor</label>
+                            <input type="text" id="sensorId" placeholder="Ex: S-123" oninput="updateGenerator()" class="w-full p-2 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-brand-500 outline-none font-bold">
+                        </div>
+                        <div class="sm:col-span-5">
                             <label class="text-xs font-bold text-slate-500 uppercase mb-1 block">Cliente / Destino</label>
-                            <input type="text" id="clientName" placeholder="Ex: Ceasa / Carrefour" oninput="updateGenerator()" class="w-full p-2 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-brand-500 outline-none font-bold">
+                            <select id="clientSelect" onchange="handleClientChange()" class="w-full p-2 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-brand-500 outline-none font-bold">
+                                <option value="">Selecione...</option>
+                                <option value="ARMAZEM MATEUS S.A">ARMAZEM MATEUS S.A</option>
+                                <option value="PERBONI">PERBONI</option>
+                                <option value="TRIELO">TRIELO</option>
+                                <option value="FAZENDA SANTA TEREZINHA">FAZENDA SANTA TEREZINHA</option>
+                                <option value="DOCE MEL">DOCE MEL</option>
+                                <option value="Outro">Outro (Digitar manualmente)</option>
+                            </select>
+                            <input type="text" id="clientNameManual" placeholder="Digite o nome do cliente" oninput="updateGenerator()" class="w-full p-2 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-brand-500 outline-none font-bold mt-2 hidden">
                         </div>
                     </div>
 
-                    <!-- 4. RESPONSÁVEL E DATA -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-xs font-bold text-slate-500 uppercase mb-1 block">Conferente Responsável</label>
-                            <select id="driverSelect" required onchange="updateGenerator()" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none text-sm bg-white font-bold">
-                                <option value="">Selecione...</option>
-                                <option value="Fagner Elias">Fagner Elias</option>
-                                <option value="Outro">Outro (Em branco)</option>
-                            </select>
-                        </div>
+                    <!-- 4. DATA -->
+                    <div class="grid grid-cols-1 gap-4">
                         <div>
                             <label class="text-xs font-bold text-slate-500 uppercase mb-1 block">Data</label>
                             <input type="date" id="reportDate" onchange="updateGenerator()" class="w-full p-2 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-brand-500 outline-none font-bold">
@@ -176,7 +181,7 @@
                     <div class="bg-blue-50 border border-blue-100 rounded-lg p-3 mt-4">
                         <p class="text-xs text-blue-800 font-medium">
                             <i data-lucide="info" class="w-3 h-3 inline mr-1"></i>
-                            A área de colagem de etiquetas na segunda página se ajusta automaticamente para Paripassu (Armazenamento) ou Notas Fiscais Múltiplas (Embarque).
+                            O layout de Armazenamento gera 3 páginas. A Tabela de Relação de Parceiros ocupará uma página inteira e exclusiva (Página 3).
                         </p>
                     </div>
 
@@ -193,11 +198,11 @@
                 <!-- CABEÇALHO DO DOCUMENTO -->
                 <div class="border-b-2 border-slate-800 pb-3 mb-4 flex justify-between items-end">
                     <div>
-                        <h1 class="text-xl font-black text-slate-900 uppercase tracking-tight" id="docTitle">Checklist de Processo</h1>
-                        <p class="text-xs font-bold text-slate-500 mt-1" id="docSubtitle">Inspeção de Qualidade e Ponto de Controle SPG</p>
+                        <h1 class="text-xl font-black text-slate-900 uppercase tracking-tight" id="docTitle">Controle de Processo</h1>
+                        <p class="text-xs font-bold text-slate-500 mt-1" id="docSubtitle">Registro de Inspeção, Qualidade e Rastreabilidade</p>
                     </div>
                     <div class="text-right">
-                        <img src="https://img.icons8.com/fluency/512/checked-checkbox.png" class="w-10 h-10 inline-block opacity-80" alt="Logo">
+                        <img src="https://i.imgur.com/xSmARfS.png" class="w-16 h-auto inline-block object-contain" alt="Logo SPG">
                     </div>
                 </div>
 
@@ -211,21 +216,40 @@
                         <span class="block text-[9px] uppercase font-bold text-slate-500">Produto(s) e Quantidades (Preencher manual)</span>
                         <span class="block text-[11px] font-black text-slate-800 leading-tight mt-0.5 break-words" id="printProduct">---</span>
                     </div>
-                    <div id="printClientContainer" class="w-1/3 p-1.5 border-r border-b border-slate-400 bg-slate-50 print:bg-transparent transition-all">
-                        <span class="block text-[9px] uppercase font-bold text-slate-500">Cliente / Destino</span>
-                        <span class="block text-xs font-black text-slate-800 truncate" id="printClient">_______________________</span>
+                    <div id="printClientContainer" class="w-1/3 p-1.5 border-r border-b border-slate-400 bg-slate-50 print:bg-transparent transition-all flex flex-col">
+                        <span class="block text-[9px] uppercase font-bold text-slate-500 mb-1">Cliente / Destino</span>
+                        <div class="flex items-end flex-grow gap-1">
+                            <span class="text-xs font-black text-slate-800 whitespace-nowrap empty:hidden" id="printClient"></span>
+                            <div class="flex-grow border-b border-slate-800 mb-[2px]" id="printClientLine"></div>
+                        </div>
                     </div>
-                    <div id="printLoteContainer" class="w-1/3 p-1.5 border-r border-b border-slate-400 transition-all">
-                        <span id="printLoteLabel" class="block text-[9px] uppercase font-bold text-slate-500">Lote / ID do Pallet</span>
-                        <span class="block text-[10px] font-black text-slate-800 truncate mt-0.5" id="printLote">_______________________</span>
+                    <div id="printLoteContainer" class="w-1/4 p-1.5 border-r border-b border-slate-400 transition-all flex flex-col">
+                        <span id="printLoteLabel" class="block text-[9px] uppercase font-bold text-slate-500 mb-1">Nº Embarque</span>
+                        <div class="flex items-end flex-grow gap-1">
+                            <span class="text-[10px] font-black text-slate-800 whitespace-nowrap empty:hidden" id="printLote"></span>
+                            <div class="flex-grow border-b border-slate-800 mb-[2px]" id="printLoteLine"></div>
+                        </div>
                     </div>
-                    <div class="w-1/3 p-1.5 border-b border-slate-400">
-                        <span class="block text-[9px] uppercase font-bold text-slate-500">Data</span>
-                        <span class="block text-xs font-black text-slate-800" id="printDate">__/__/____</span>
+                    <div id="printSensorContainer" class="w-1/6 p-1.5 border-r border-b border-slate-400 transition-all flex flex-col">
+                        <span class="block text-[9px] uppercase font-bold text-slate-500 mb-1">Nº Sensor</span>
+                        <div class="flex items-end flex-grow gap-1">
+                            <span class="text-[10px] font-black text-slate-800 whitespace-nowrap empty:hidden" id="printSensor"></span>
+                            <div class="flex-grow border-b border-slate-800 mb-[2px]" id="printSensorLine"></div>
+                        </div>
                     </div>
-                    <div class="w-full p-1.5 bg-slate-50 print:bg-transparent border-slate-400">
-                        <span class="block text-[9px] uppercase font-bold text-slate-500">Conferente Responsável pela Validação</span>
-                        <span class="block text-xs font-black text-slate-800 truncate" id="printDriver">__________________</span>
+                    <div class="w-1/4 p-1.5 border-b border-slate-400 flex flex-col">
+                        <span class="block text-[9px] uppercase font-bold text-slate-500 mb-1">Data</span>
+                        <div class="flex items-end flex-grow gap-1">
+                            <span class="text-xs font-black text-slate-800 whitespace-nowrap empty:hidden" id="printDate"></span>
+                            <div class="flex-grow border-b border-slate-800 mb-[2px]" id="printDateLine"></div>
+                        </div>
+                    </div>
+                    <div class="w-full p-1.5 bg-slate-50 print:bg-transparent border-slate-400 flex flex-col">
+                        <span class="block text-[9px] uppercase font-bold text-slate-500 mb-1">Conferente Responsável pela Validação</span>
+                        <div class="flex items-end flex-grow gap-1">
+                            <span class="text-xs font-black text-slate-800 whitespace-nowrap empty:hidden" id="printDriver"></span>
+                            <div class="flex-grow border-b border-slate-800 mb-[2px]" id="printDriverLine"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -252,32 +276,44 @@
                         </div>
                     </div>
 
+                    <!-- MATERIAIS DE MONTAGEM (Injetada via JS - Movido para a Página 2) -->
+                    <div id="printMaterialsArea" class="mb-4 break-inside-avoid">
+                        <!-- Conteúdo injetado aqui -->
+                    </div>
+
                     <!-- ÁREA DE ASSINATURAS E OBSERVAÇÕES -->
-                    <div class="mt-2 pt-2">
+                    <div class="mt-4 pt-2">
                         <div class="mb-6">
                             <span class="block text-[10px] font-bold text-slate-800 mb-1.5 uppercase">Observações / Motivo de Não Conformidade (Se houver):</span>
                             <!-- Área de observação -->
                             <div class="w-full border border-slate-400 h-16 rounded"></div>
                         </div>
                         
-                        <div class="grid grid-cols-3 gap-4 mt-8 px-2 text-center">
+                        <div class="grid grid-cols-4 gap-3 mt-10 px-1 text-center">
                             <div>
                                 <div class="border-t border-slate-800 pt-1">
-                                    <span class="block text-[11px] font-bold text-slate-800">Assinatura do Conferente</span>
+                                    <span class="block text-[10px] font-bold text-slate-800">Assinatura do Conferente</span>
                                     <span class="block text-[8px] text-slate-500 mt-0.5 leading-tight" id="signDriver">Validou as caixas da equipe</span>
                                 </div>
                             </div>
                             
                             <div>
                                 <div class="border-t border-slate-800 pt-1">
-                                    <span class="block text-[11px] font-bold text-slate-800">Assinatura do Montador</span>
+                                    <span class="block text-[10px] font-bold text-slate-800">Assinatura do Montador</span>
                                     <span class="block text-[8px] text-slate-500 mt-0.5 leading-tight">Empilhou e arqueou<br>o pallet</span>
                                 </div>
                             </div>
 
                             <div>
                                 <div class="border-t border-slate-800 pt-1">
-                                    <span class="block text-[11px] font-bold text-slate-800">Assinatura do Supervisor</span>
+                                    <span class="block text-[10px] font-bold text-slate-800">Resp. pelo Pack List</span>
+                                    <span class="block text-[8px] text-slate-500 mt-0.5 leading-tight">Emitiu e conferiu<br>o documento</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="border-t border-slate-800 pt-1">
+                                    <span class="block text-[10px] font-bold text-slate-800">Assinatura do Supervisor</span>
                                     <span class="block text-[8px] text-slate-500 mt-0.5 leading-tight">Validou qualidade e<br>liberou estocagem/embarque</span>
                                 </div>
                             </div>
@@ -285,6 +321,15 @@
                     </div>
                 </div>
                 <!-- FIM DA PÁGINA 2 -->
+
+                <!-- INÍCIO DA PÁGINA 3 NA IMPRESSÃO (EXCLUSIVA PARA A TABELA DE ORIGEM) -->
+                <div id="printPage3" class="print:break-before-page pt-4 print:pt-2 w-full" style="page-break-before: always; break-before: page;">
+                    <!-- TABELA DE PARCEIROS E COLHEITA (Injetada via JS) -->
+                    <div id="printPartnersArea" class="mb-6 break-inside-avoid">
+                        <!-- Conteúdo injetado aqui -->
+                    </div>
+                </div>
+                <!-- FIM DA PÁGINA 3 -->
                 
             </div>
         </div>
@@ -393,18 +438,34 @@
         document.addEventListener("DOMContentLoaded", () => {
             lucide.createIcons();
             
-            const dateInput = document.getElementById('reportDate');
-            if (!dateInput.value) {
-                const today = new Date();
-                dateInput.value = today.toISOString().split('T')[0];
-            }
+            // Removido o preenchimento automático da data para forçar o campo em branco
             updateGenerator();
         });
+
+        function handleClientChange() {
+            const select = document.getElementById('clientSelect');
+            const manualInput = document.getElementById('clientNameManual');
+            
+            if (select.value === 'Outro') {
+                manualInput.classList.remove('hidden');
+            } else {
+                manualInput.classList.add('hidden');
+            }
+            updateGenerator();
+        }
 
         function updateGenerator() {
             // Pegar valores do formulário
             const process = document.getElementById('processSelect').value;
+            const printPage3 = document.getElementById('printPage3');
             
+            // Controle da Página 3 inteira
+            if (process === 'Embarque') {
+                if (printPage3) printPage3.classList.add('hidden', 'print:hidden');
+            } else {
+                if (printPage3) printPage3.classList.remove('hidden', 'print:hidden');
+            }
+
             // Listagem e manipulação dos produtos + suas quantidades manuais
             const productsList = [
                 { id: 'Tomate', name: 'Tomate' },
@@ -414,14 +475,15 @@
             ];
 
             let selectedProductsNames = []; // Apenas os nomes para gerar as perguntas
-            let displayProductsText = []; // Textos formatados com quantidade ex: "Tomate (____ cx)"
+            let displayProductsText = []; // Textos formatados com quantidade ex: "Tomate (________ cx)"
 
             productsList.forEach(prod => {
                 const checkbox = document.getElementById(`chk${prod.id}`);
 
                 if (checkbox.checked) {
                     selectedProductsNames.push(prod.name);
-                    displayProductsText.push(`${prod.name} (____ cx)`);
+                    // Aumentando a quantidade de espaços em branco (sublinhados)
+                    displayProductsText.push(`${prod.name} (________ cx)`);
                 }
             });
 
@@ -431,64 +493,104 @@
             }
             
             const printLoteContainer = document.getElementById('printLoteContainer');
+            const printSensorContainer = document.getElementById('printSensorContainer');
             const printClientContainer = document.getElementById('printClientContainer');
 
             // Adaptação dos Labels de Lote/Pallet baseado no Processo
             if (process === 'Embarque') {
-                document.getElementById('palletLabelWeb').innerText = "IDs dos Pallets (Vai pra Pág 2)";
-                document.getElementById('palletId').placeholder = "Ex: Lotes 124, 125, 126...";
-                
-                // Oculta Lote do cabeçalho da página 1 no Embarque
-                printLoteContainer.classList.add('hidden');
-                printClientContainer.classList.remove('w-1/3');
-                printClientContainer.classList.add('w-2/3');
+                document.getElementById('palletLabelWeb').innerText = "Nº Embarque";
+                document.getElementById('printLoteLabel').innerText = "Nº Embarque";
+                document.getElementById('palletId').placeholder = "Ex: 124, 125...";
             } else {
-                document.getElementById('palletLabelWeb').innerText = "ID do Lote/Pallet";
+                document.getElementById('palletLabelWeb').innerText = "Nº Lote / Embarque";
                 document.getElementById('palletId').placeholder = "Ex: Lote 124";
-                document.getElementById('printLoteLabel').innerText = "Lote / ID do Pallet";
-
-                // Mostra Lote no cabeçalho da página 1 no Armazenamento
-                printLoteContainer.classList.remove('hidden');
-                printClientContainer.classList.remove('w-2/3');
-                printClientContainer.classList.add('w-1/3');
+                document.getElementById('printLoteLabel').innerText = "Nº Lote / Embarque";
             }
 
             const lote = document.getElementById('palletId').value;
-            const client = document.getElementById('clientName').value;
-            const responsibleVal = document.getElementById('driverSelect').value;
+            const sensor = document.getElementById('sensorId').value;
+            
+            const clientSelectVal = document.getElementById('clientSelect').value;
+            const client = clientSelectVal === 'Outro' ? document.getElementById('clientNameManual').value : clientSelectVal;
+            
             const dateVal = document.getElementById('reportDate').value;
 
-            // Tratamento de nomes em branco ou manuais
-            const responsibleName = (responsibleVal === 'Outro' || !responsibleVal) ? '' : responsibleVal;
-
-            // Formatar data
-            let displayDate = "__/__/____";
+            // Formatar data (Deixa vazio por padrão para gerar a linha contínua)
+            let displayDate = "";
             if (dateVal) {
                 const parts = dateVal.split('-');
                 displayDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
             }
 
             // Atualizar cabeçalhos do documento
-            document.getElementById('docTitle').innerText = `CHECKLIST DE ${process}`;
+            document.getElementById('docTitle').innerText = `CONTROLE E CHECKLIST DE ${process.toUpperCase()}`;
             document.getElementById('printProcess').innerText = process;
             
             // Aplicando o texto com o espaço em branco para quantidade manual
             document.getElementById('printProduct').innerText = displayProductsText.join(" + ");
             
-            document.getElementById('printClient').innerText = client ? client : "_______________________";
-            document.getElementById('printLote').innerText = lote ? lote : "_______________________";
+            document.getElementById('printClient').innerText = client;
+            document.getElementById('printClientLine').style.display = client ? 'none' : 'block';
+
+            document.getElementById('printLote').innerText = lote;
+            document.getElementById('printLoteLine').style.display = lote ? 'none' : 'block';
+
+            document.getElementById('printSensor').innerText = sensor;
+            document.getElementById('printSensorLine').style.display = sensor ? 'none' : 'block';
+
             document.getElementById('printDate').innerText = displayDate;
-            document.getElementById('printDriver').innerText = responsibleName ? responsibleName : "__________________";
-            document.getElementById('signDriver').innerHTML = responsibleName ? `<b>${responsibleName}</b><br>Validou as caixas` : "Validou as caixas da equipe";
+            document.getElementById('printDateLine').style.display = displayDate ? 'none' : 'block';
+
+            // Como esse campo não existe no painel e é pra ficar em branco, fica sempre visível a linha.
+            document.getElementById('printDriver').innerText = ""; 
+            document.getElementById('printDriverLine').style.display = 'block';
+
+            document.getElementById('signDriver').innerHTML = "Validou as caixas da equipe";
 
             // Gerar Corpo do Checklist
             generateChecklistBody(process, selectedProductsNames);
 
             // Gerar Área de Etiquetas Dinâmica (Paripassu vs Nota Fiscal)
             generateLabelsArea(process, selectedProductsNames, lote);
+
+            // Gerar Área de Materiais (Apenas para Armazenamento - Na Página 2)
+            generateMaterialsArea(process);
+
+            // Gerar Tabela de Parceiros/Produtores (Apenas para Armazenamento - Na Página 3)
+            generatePartnersArea(process);
             
             // Re-renderizar ícones injetados
             lucide.createIcons();
+        }
+
+        function generateMaterialsArea(process) {
+            const container = document.getElementById('printMaterialsArea');
+            
+            // Retorna vazio e oculta a área no processo de Embarque
+            if (process === 'Embarque') {
+                container.innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = `
+                <span class="block text-[11px] font-bold text-slate-800 mb-2 uppercase flex items-center gap-1">
+                    <i data-lucide="package" class="w-4 h-4"></i> Materiais de Montagem Utilizados (Preenchimento Manual):
+                </span>
+                <div class="flex gap-3">
+                    <div class="w-1/3 border border-slate-400 rounded p-2 px-2.5 flex items-end bg-slate-50 print:bg-transparent gap-2">
+                        <span class="text-[10px] font-bold text-slate-700 uppercase whitespace-nowrap leading-none pb-0.5">Qtd. Cantoneiras:</span>
+                        <div class="flex-grow border-b border-slate-800 mb-0.5"></div>
+                    </div>
+                    <div class="w-1/3 border border-slate-400 rounded p-2 px-2.5 flex items-end bg-slate-50 print:bg-transparent gap-2">
+                        <span class="text-[10px] font-bold text-slate-700 uppercase whitespace-nowrap leading-none pb-0.5">Qtd. Fitas de Arquear:</span>
+                        <div class="flex-grow border-b border-slate-800 mb-0.5"></div>
+                    </div>
+                    <div class="w-1/3 border border-slate-400 rounded p-2 px-2.5 flex items-end bg-slate-50 print:bg-transparent gap-2">
+                        <span class="text-[10px] font-bold text-slate-700 uppercase whitespace-nowrap leading-none pb-0.5">Qtd. Clipes:</span>
+                        <div class="flex-grow border-b border-slate-800 mb-0.5"></div>
+                    </div>
+                </div>
+            `;
         }
 
         function generateLabelsArea(process, productsArray, typedLotes) {
@@ -507,12 +609,12 @@
                     // Cria 4 áreas de colagem para CADA produto selecionado, tamanho compacto
                     for (let i = 1; i <= 4; i++) {
                         container.innerHTML += `
-                            <div class="border-2 border-dashed border-slate-400 rounded-lg h-20 flex flex-col items-center justify-center text-slate-400 bg-slate-50 print:bg-transparent relative overflow-hidden p-1">
+                            <div class="border-2 border-dashed border-slate-400 rounded-lg h-24 flex flex-col items-center justify-center text-slate-400 bg-slate-50 print:bg-transparent relative overflow-hidden p-1">
                                 <div class="absolute inset-0 flex items-center justify-center opacity-10">
-                                    <i data-lucide="qr-code" class="w-8 h-8"></i>
+                                    <i data-lucide="qr-code" class="w-10 h-10"></i>
                                 </div>
-                                <span class="text-[9px] font-bold uppercase tracking-wider text-slate-600 relative z-10 bg-slate-50 print:bg-white px-1 text-center leading-tight">Colar Etiqueta<br>${prod}</span>
-                                <span class="text-[7px] text-slate-400 relative z-10 mt-0.5 bg-slate-50 print:bg-white px-1 text-center">QR / Data / Parc.</span>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-600 relative z-10 bg-slate-50 print:bg-white px-1 text-center leading-tight">Colar Etiqueta<br>${prod}</span>
+                                <span class="text-[8px] text-slate-400 relative z-10 mt-1 bg-slate-50 print:bg-white px-1 text-center">QR / Data / Parc.</span>
                             </div>
                         `;
                     }
@@ -525,9 +627,9 @@
                 // Gera 6 quadros para acomodar várias Notas Fiscais do mesmo embarque
                 for (let i = 1; i <= 6; i++) {
                     container.innerHTML += `
-                        <div class="border-2 border-dashed border-slate-400 rounded-lg h-20 flex flex-col items-center justify-center text-slate-400 bg-slate-50 print:bg-transparent relative overflow-hidden p-2">
+                        <div class="border-2 border-dashed border-slate-400 rounded-lg h-24 flex flex-col items-center justify-center text-slate-400 bg-slate-50 print:bg-transparent relative overflow-hidden p-2">
                             <div class="absolute inset-0 flex items-center justify-center opacity-10">
-                                <i data-lucide="file-text" class="w-10 h-10"></i>
+                                <i data-lucide="file-text" class="w-12 h-12"></i>
                             </div>
                             <span class="text-[10px] font-bold uppercase tracking-wider text-slate-600 relative z-10 bg-slate-50 print:bg-white px-2 text-center leading-tight">Colar Etiqueta<br>Nota Fiscal ${i}</span>
                             <span class="text-[8px] text-slate-400 relative z-10 mt-1 bg-slate-50 print:bg-white px-1 text-center">Nº NF / Destino</span>
@@ -535,16 +637,67 @@
                     `;
                 }
 
-                // Adiciona um quadro extra embaixo para listar todos os IDs dos pallets fisicamente
+                // Adiciona um quadro extra embaixo para listar todos os IDs dos pallets fisicamente (Na Página 2 do Embarque)
                 container.innerHTML += `
-                    <div class="col-span-3 mt-1">
+                    <div class="col-span-3 mt-2">
                         <span class="block text-[10px] font-bold text-slate-800 mb-1.5 uppercase">Relação Completa de Pallets Embarcados (Escrever IDs/Lotes):</span>
-                        <div class="w-full border border-slate-400 h-12 rounded p-1.5 text-[11px] font-medium text-slate-700">
+                        <div class="w-full border border-slate-400 h-16 rounded p-1.5 text-[11px] font-medium text-slate-700">
                             ${typedLotes ? typedLotes : ''}
                         </div>
                     </div>
                 `;
             }
+        }
+
+        // Nova função para gerar a tabela de parceiros e quantidades manuais (Agora na Página 3)
+        function generatePartnersArea(process) {
+            const container = document.getElementById('printPartnersArea');
+            
+            // Retorna vazio pois a página toda já é oculta via CSS, mas mantemos por segurança
+            if (process === 'Embarque') {
+                container.innerHTML = '';
+                return;
+            }
+            
+            // Gera 25 linhas automaticamente para preencher bem a página 3
+            let rowsHtml = '';
+            for(let i = 0; i < 25; i++) {
+                rowsHtml += `
+                    <tr>
+                        <td class="border border-slate-400 p-1.5 h-7"></td>
+                        <td class="border border-slate-400 p-1.5 h-7"></td>
+                        <td class="border border-slate-400 p-1.5 h-7"></td>
+                        <td class="border border-slate-400 p-1.5 h-7"></td>
+                        <td class="border border-slate-400 p-1.5 h-7"></td>
+                    </tr>
+                `;
+            }
+            
+            container.innerHTML = `
+                <span class="block text-[11px] font-bold text-slate-800 mb-2 uppercase flex items-center gap-1">
+                    <i data-lucide="users" class="w-4 h-4"></i> Origem dos Produtos (Preenchimento Manual):
+                </span>
+                <table class="w-full border-collapse border border-slate-400 text-left text-[11px]">
+                    <thead>
+                        <tr class="bg-slate-100 print:bg-slate-100">
+                            <th class="border border-slate-400 p-2 w-1/6 text-center">Nº do Pallet</th>
+                            <th class="border border-slate-400 p-2 w-1/3">Parceiro / Produtor</th>
+                            <th class="border border-slate-400 p-2 w-1/6">Produto</th>
+                            <th class="border border-slate-400 p-2 w-1/6 text-center">Data Colheita</th>
+                            <th class="border border-slate-400 p-2 w-1/6 text-center">Qtd Caixas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rowsHtml}
+                    </tbody>
+                    <tfoot>
+                        <tr class="bg-slate-50 print:bg-transparent">
+                            <td colspan="4" class="border border-slate-400 p-2 text-right font-bold uppercase text-xs">Total Geral de Caixas:</td>
+                            <td class="border border-slate-400 p-2 text-center font-bold text-sm"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            `;
         }
 
         function generateChecklistBody(process, productsArray) {
