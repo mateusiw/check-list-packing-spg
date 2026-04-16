@@ -659,11 +659,12 @@
                 return;
             }
             
-            // Gera 25 linhas automaticamente para preencher bem a página 3
+            // Gera 32 linhas automaticamente para preencher bem a página 3
             let rowsHtml = '';
-            for(let i = 0; i < 25; i++) {
+            for(let i = 0; i < 32; i++) {
                 rowsHtml += `
                     <tr>
+                        <td class="border border-slate-400 p-1.5 h-7"></td>
                         <td class="border border-slate-400 p-1.5 h-7"></td>
                         <td class="border border-slate-400 p-1.5 h-7"></td>
                         <td class="border border-slate-400 p-1.5 h-7"></td>
@@ -680,23 +681,31 @@
                 <table class="w-full border-collapse border border-slate-400 text-left text-[11px]">
                     <thead>
                         <tr class="bg-slate-100 print:bg-slate-100">
-                            <th class="border border-slate-400 p-2 w-1/6 text-center">Nº do Pallet</th>
-                            <th class="border border-slate-400 p-2 w-1/3">Parceiro / Produtor</th>
-                            <th class="border border-slate-400 p-2 w-1/6">Produto</th>
-                            <th class="border border-slate-400 p-2 w-1/6 text-center">Data Colheita</th>
-                            <th class="border border-slate-400 p-2 w-1/6 text-center">Qtd Caixas</th>
+                            <th class="border border-slate-400 p-2 w-[12%] text-center">Nº do Pallet</th>
+                            <th class="border border-slate-400 p-2 w-[28%]">Parceiro / Produtor</th>
+                            <th class="border border-slate-400 p-2 w-[15%]">Produto</th>
+                            <th class="border border-slate-400 p-2 w-[15%] text-center">Data Colheita</th>
+                            <th class="border border-slate-400 p-2 w-[18%] text-center">Modelo da Caixa</th>
+                            <th class="border border-slate-400 p-2 w-[12%] text-center">Qtd Caixas</th>
                         </tr>
                     </thead>
                     <tbody>
                         ${rowsHtml}
                     </tbody>
                     <tfoot>
-                        <tr class="bg-slate-50 print:bg-transparent">
-                            <td colspan="4" class="border border-slate-400 p-2 text-right font-bold uppercase text-xs">Total Geral de Caixas:</td>
-                            <td class="border border-slate-400 p-2 text-center font-bold text-sm"></td>
+                        <tr class="print:bg-transparent">
+                            <td colspan="5" class="border-0 p-2 text-right font-bold uppercase text-xs pr-4">Total Geral de Caixas:</td>
+                            <td class="border border-slate-400 border-t-0 p-2 text-center font-bold text-sm bg-slate-50 print:bg-transparent"></td>
                         </tr>
                     </tfoot>
                 </table>
+
+                <!-- Mini Campo de Observação Estilo Nota Fiscal -->
+                <div class="mt-5 border border-slate-400 rounded-sm p-2 h-20 relative w-full flex flex-col justify-end bg-slate-50 print:bg-transparent">
+                    <span class="text-[9px] font-bold text-slate-600 uppercase absolute -top-2 left-3 bg-slate-50 print:bg-white px-1 tracking-wider">
+                        Reservado para Observações
+                    </span>
+                </div>
             `;
         }
 
