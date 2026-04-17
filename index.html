@@ -696,35 +696,43 @@
                 return;
             }
             
-            // Gera 18 blocos (Paletes) com 3 linhas cada, conforme o modelo da imagem
+            // Gera 18 blocos (Paletes) com 4 linhas cada
             let rowsHtml = '';
             for(let i = 1; i <= 18; i++) {
                 rowsHtml += `
                     <tr>
-                        <td rowspan="3" class="border border-slate-500 text-center text-sm font-black bg-slate-50 print:bg-transparent">${i}</td>
-                        <td class="border border-slate-500 h-[17px]"></td>
-                        <td class="border border-slate-500 h-[17px]"></td>
-                        <td class="border border-slate-500 h-[17px]"></td>
-                        <td class="border border-slate-500 h-[17px]"></td>
-                        <td class="border border-slate-500 h-[17px]"></td>
-                        <td class="border border-slate-500 h-[17px]"></td>
-                        <td rowspan="3" class="border border-slate-500 text-center font-bold"></td>
+                        <td rowspan="4" class="border border-slate-500 text-center text-sm font-black bg-slate-50 print:bg-transparent">${i}</td>
+                        <td class="border border-slate-500 h-[14px]"></td>
+                        <td class="border border-slate-500 h-[14px]"></td>
+                        <td class="border border-slate-500 h-[14px]"></td>
+                        <td class="border border-slate-500 h-[14px]"></td>
+                        <td class="border border-slate-500 h-[14px]"></td>
+                        <td class="border border-slate-500 h-[14px]"></td>
+                        <td rowspan="4" class="border border-slate-500 text-center font-bold"></td>
                     </tr>
                     <tr>
-                        <td class="border border-slate-500 h-[17px]"></td>
-                        <td class="border border-slate-500 h-[17px]"></td>
-                        <td class="border border-slate-500 h-[17px]"></td>
-                        <td class="border border-slate-500 h-[17px]"></td>
-                        <td class="border border-slate-500 h-[17px]"></td>
-                        <td class="border border-slate-500 h-[17px]"></td>
+                        <td class="border border-slate-500 h-[14px]"></td>
+                        <td class="border border-slate-500 h-[14px]"></td>
+                        <td class="border border-slate-500 h-[14px]"></td>
+                        <td class="border border-slate-500 h-[14px]"></td>
+                        <td class="border border-slate-500 h-[14px]"></td>
+                        <td class="border border-slate-500 h-[14px]"></td>
                     </tr>
                     <tr>
-                        <td class="border border-slate-500 h-[17px]"></td>
-                        <td class="border border-slate-500 h-[17px]"></td>
-                        <td class="border border-slate-500 h-[17px]"></td>
-                        <td class="border border-slate-500 h-[17px]"></td>
-                        <td class="border border-slate-500 h-[17px]"></td>
-                        <td class="border border-slate-500 h-[17px]"></td>
+                        <td class="border border-slate-500 h-[14px]"></td>
+                        <td class="border border-slate-500 h-[14px]"></td>
+                        <td class="border border-slate-500 h-[14px]"></td>
+                        <td class="border border-slate-500 h-[14px]"></td>
+                        <td class="border border-slate-500 h-[14px]"></td>
+                        <td class="border border-slate-500 h-[14px]"></td>
+                    </tr>
+                    <tr>
+                        <td class="border border-slate-500 h-[14px]"></td>
+                        <td class="border border-slate-500 h-[14px]"></td>
+                        <td class="border border-slate-500 h-[14px]"></td>
+                        <td class="border border-slate-500 h-[14px]"></td>
+                        <td class="border border-slate-500 h-[14px]"></td>
+                        <td class="border border-slate-500 h-[14px]"></td>
                     </tr>
                 `;
             }
